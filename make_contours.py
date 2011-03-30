@@ -1,12 +1,13 @@
 #!/usr/bin/python
 import string
-
+import numpy as np
 def extract_data(fichier_asc="srtm_38_03.asc", 
                  lat_min=48.2299, 
 		 long_min=6.8489,
 		 lat_max=48.3343,
 		 long_max=7.0514):
     """
+    
     filter which extract the sub area defined by 
     [long_min,long_max]x[lat_min,lat_max] in the srtm tile
     contained in the file fichier_asc
@@ -43,47 +44,30 @@ def extract_data(fichier_asc="srtm_38_03.asc",
     print 'Extracting columns %d-%d from rows %d-%d' %\
           (first_col, last_col, first_row, last_row)
 
-    #open the output file
-    fout = open('extract_py.txt','w')
-    
-    #writing the new header
-    head_out=('ncols\t%d\n' % new_ncols)+\
-             ('nrows\t%d\n' % new_nrows)+\
-	     ('xllcorner\t%.15f\n' % new_xllcorner)+\
-	     ('yllcorner\t%.15f\n' % new_yllcorner)+\
-	     ('cellsize\t%.15f\n' % cellsize)+\
-	     ('NODATA_value\t%d\n' % NODATA)
-    fout.write(head_out)
-    
-    # main loop
+    # construct the submatrix of elevation 
+    elevation = np.zeros((last_row-first_row+1,last_col-first_col+1),dtype='float')
     for i in range(last_row+1):
         line = fid.readline().split()
 	if i >= first_row:
 	    for j in range(first_col,last_col):
-	         fout.write(line[j]+' ')
-            fout.write('\n')
+	         elevation[i - first_row ,j-first_col]=line[j]
 
     fid.close()
-    fout.close()
 
     return [new_ncols, new_nrows, 
             new_xllcorner, new_yllcorner,
-	    cellsize]
+	    cellsize , elevation]
 
-def converti(fichier_osm="data.osm",
+def convert(fichier_osm="data.osm",
              fichier_asc="srtm_38_03.asc", 
              lat_min=48.2299, 
 	     long_min=6.8489,
      	     lat_max=48.3343,
   	     long_max=7.0514):
      	     
-    [ncols, rows, xllcorner, yllcorner, cellsize]=extract_data(fichier_osm,
-                                                               fichier_asc,
-			                                       lat_min,
-			                                       long_min,
-			                                       lat_max,
-			                                       long_max)
+    [ncols, nrows, xllcorner, yllcorner, cellsize, matrice ] =\
+              extract_data( fichier_asc, lat_min, long_min, lat_max, long_max)
 
 
 if __name__ == '__main__':
-     converti() 
+     convert() 

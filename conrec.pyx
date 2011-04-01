@@ -3,7 +3,6 @@ import numpy as np
 import cython
 #   Derivation from the fortran version of CONREC by Paul Bourke
 #   d               ! matrix of data to contour
-#   ilb,iub,jlb,jub ! index bounds of data matrix
 #   x               ! data matrix column coordinates
 #   y               ! data matrix row coordinates
 #   nc              ! number of contour levels
@@ -24,7 +23,6 @@ cdef inline double MAX(double a, double b) : return b if a <= b  else a
 @cython.cdivision(True)
 
 def contour(nc.ndarray[double,ndim=2] d,
-            int ilb, int iub, int jlb, int jub,
             nc.ndarray[double, ndim = 1] x,
             nc.ndarray[double, ndim = 1] y,
             nc.ndarray[double, ndim = 1] z):
@@ -37,14 +35,14 @@ def contour(nc.ndarray[double,ndim=2] d,
    cdef double xh[5], yh[5]
    cdef int *im = [0, 1, 1, 0]
    cdef int *jm = [0, 0, 1, 1]
-   cdef nc.ndarray[int,ndim=3] castab = np.array( [[[0,0,8], [0,2,5], [7,6,9]],
+   cdef nc.ndarray[long,ndim=3] castab = np.array( [[[0,0,8], [0,2,5], [7,6,9]],
                                                    [[0,3,4], [1,3,1], [4,3,0]],
-                                                   [[9,6,7], [5,2,0], [8,0,0]]])
+                                                   [[9,6,7], [5,2,0], [8,0,0]]],dtype='int64')
    
    cdef double temp1, temp2
 
-   for j from (jub-1) >= j >=jlb:
-      for i from ilb <= i <=(iub-1):
+   for j from (d.shape[1]-1) >= j >=0:
+      for i from 0 <= i <=(d.shape[0]-1):
          temp1 = MIN(d[i,j], d[i,j+1])
          temp2 = MIN(d[i+1,j], d[i+1,j+1])
          dmin  = MIN(temp1, temp2)
@@ -53,7 +51,7 @@ def contour(nc.ndarray[double,ndim=2] d,
          dmax  = MAX(temp1, temp2);
          if (dmax < z[0]) or (dmin > z[-1]):
             continue
-         for k in range(z.shape[0]):
+         for k from  0 <= k <= (z.shape[0]-1):
             if (z[k] < dmin ) or ( z[k] > dmax):
                continue
             for m from 4>= m >=0: 

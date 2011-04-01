@@ -83,16 +83,16 @@ def contour(nc.ndarray[double,ndim=2] d,
                
                if (case_value != 0):
                   [x1, y1, x2, y2] =\
-                  {1: lambda v:[xh[m1], yh[m1], xh[m2], yh[m2]], # 1 and 2  
-                   2: lambda v:[xh[m2], yh[m2], xh[m3], yh[m3]], # 2 and 3 
-                   3: lambda v:[xh[m3], yh[m3], xh[m1], yh[m1]], # 3 and 1 
-                   4: lambda v:[xh[m1], yh[m1], xsect(xh, h, m2, m3), ysect(yh, h, m2, m3)], # vertex 1 and side 2-3 
-                   5: lambda v:[xh[m2], yh[m2], xsect(xh, h, m3, m1), ysect(yh, h, m3, m1)], # vertex 2 and side 3-1 
-                   6: lambda v:[xh[m3], yh[m3], xsect(xh, h, m1, m2), ysect(yh, h, m1, m2)], # vertex 3 and side 1-2 
-                   7: lambda v:[xsect(xh, h, m1, m2), ysect(yh, h, m1, m2), xsect(xh, h, m2, m3), ysect(yh, h, m2,m3)], # sides 1-2 and 2-3 
-                   8: lambda v:[xsect(xh, h, m2, m3), ysect(yh, h, m2, m3), xsect(xh, h, m3, m1), ysect(yh, h, m3,m1)], # sides 2-3 and 3-1 
-                   9: lambda v:[xsect(xh, h, m3, m1), ysect(yh, h, m3, m1), xsect(xh, h, m1, m2), ysect(yh, h, m1,m2)]  # sides 3-1 and 1-2 
-                  }[case_value](1)
+                  {1: [xh[m1], yh[m1], xh[m2], yh[m2]], # 1 and 2  
+                   2: [xh[m2], yh[m2], xh[m3], yh[m3]], # 2 and 3 
+                   3: [xh[m3], yh[m3], xh[m1], yh[m1]], # 3 and 1 
+                   4: [xh[m1], yh[m1], xsect(xh, h, m2, m3), ysect(yh, h, m2, m3)], # vertex 1 and side 2-3 
+                   5: [xh[m2], yh[m2], xsect(xh, h, m3, m1), ysect(yh, h, m3, m1)], # vertex 2 and side 3-1 
+                   6: [xh[m3], yh[m3], xsect(xh, h, m1, m2), ysect(yh, h, m1, m2)], # vertex 3 and side 1-2 
+                   7: [xsect(xh, h, m1, m2), ysect(yh, h, m1, m2), xsect(xh, h, m2, m3), ysect(yh, h, m2,m3)], # sides 1-2 and 2-3 
+                   8: [xsect(xh, h, m2, m3), ysect(yh, h, m2, m3), xsect(xh, h, m3, m1), ysect(yh, h, m3,m1)], # sides 2-3 and 3-1 
+                   9: [xsect(xh, h, m3, m1), ysect(yh, h, m3, m1), xsect(xh, h, m1, m2), ysect(yh, h, m1,m2)]  # sides 3-1 and 1-2 
+                  }[case_value]
                
                   # Finally draw the line */
                   print "line (%f,%f,%f,%f) z = %f" %(x1,y1,x2,y2,z[k])

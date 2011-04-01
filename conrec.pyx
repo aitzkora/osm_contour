@@ -40,7 +40,9 @@ def contour(nc.ndarray[double,ndim=2] d,
                                                    [[9,6,7], [5,2,0], [8,0,0]]],dtype='int64')
    
    cdef double temp1, temp2
-
+   cdef dict l = {} 
+   for i from 0 <= i <z.shape[0]:
+       l[z[i]]=[]
    for j from (d.shape[1]-1) >= j >=0:
       for i from 0 <= i <=(d.shape[0]-1):
          temp1 = MIN(d[i,j], d[i,j+1])
@@ -93,5 +95,7 @@ def contour(nc.ndarray[double,ndim=2] d,
                   }[case_value]
                
                   # Finally draw the line */
-                  print "line (%f,%f,%f,%f) z = %f" %(x1,y1,x2,y2,z[k])
-                  #ConrecLine(x1,y1,x2,y2,z[k]);
+                  #print "line (%f,%f,%f,%f) z = %f" %(x1,y1,x2,y2,z[k])
+                  l[z[k]].append([x1,y1,x2,y2])
+		  #ConrecLine(x1,y1,x2,y2,z[k]);
+   return l		  

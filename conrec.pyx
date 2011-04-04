@@ -20,6 +20,38 @@ cdef inline double MAX(double a, double b) : return b if a <= b  else a
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+cdef merge_seg(list courbe, double x1, double y1, double x2, double y2):
+#def merge_seg(courbe,x1,y1,x2,y2):
+     # on insert dans une et une seule
+     # composante connexe
+     modif = False
+     cdef int i
+     if not courbe: 
+       courbe = [[(x1,y1),(x2,y2)]]
+     else:
+       for i from 0 <= i < len(courbe):
+          if courbe[i][0][0] == x2 and courbe[i][0][1] == y2:
+               courbe[i].insert(0,(x1, y1))
+               modif = True
+               break
+          elif courbe[i][0][0] == x1 and courbe[i][0][1] == y1:
+               courbe[i].insert(0,(x2, y2))
+               modif = True
+               break
+          elif courbe[i][-1][0] == x2 and courbe[i][-1][1] == y2:
+               courbe[i].append((x1, y1))
+               modif = True
+               break
+          elif courbe[i][-1][0] == x1 and courbe[i][-1][1] == y1:
+               courbe[i].append((x2, y2))
+               modif = True
+               break
+       if not modif:
+          courbe.append([(x1, y1, x2, y2)])
+     return courbe	  
+       
+@cython.boundscheck(False)
+@cython.wraparound(False)
 @cython.cdivision(True)
 
 def contour(nc.ndarray[double,ndim=2] d,
@@ -29,7 +61,7 @@ def contour(nc.ndarray[double,ndim=2] d,
 
    cdef int m1,m2,m3,case_value
    cdef double dmin,dmax,x1=0,x2=0,y1=0,y2=0
-   cdef int i,j,k,m
+   cdef int i,j,k,m 
    cdef double h[5]
    cdef int sh[5]
    cdef double xh[5], yh[5]
@@ -96,6 +128,7 @@ def contour(nc.ndarray[double,ndim=2] d,
                
                   # Finally draw the line */
                   #print "line (%f,%f,%f,%f) z = %f" %(x1,y1,x2,y2,z[k])
-                  l[z[k]].append([x1,y1,x2,y2])
+                  #l[z[k]].append([x1,y1,x2,y2])
+                  l[z[k]]=merge_seg(l[z[k]],x1,y1,x2,y2)
 		  #ConrecLine(x1,y1,x2,y2,z[k]);
    return l		  

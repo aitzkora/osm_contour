@@ -65,9 +65,25 @@ def convert(fichier_osm="data.osm",
      	     lat_max=48.3343,
   	     long_max=7.0514):
      	     
-    [ncols, nrows, xllcorner, yllcorner, cellsize, matrice ] =\
-              extract_data( fichier_asc, lat_min, long_min, lat_max, long_max)
+    [nc, nr, xc, yc, cs, elev] =\
+        extract_data( fichier_asc, lat_min, long_min, lat_max, long_max)
+    
+    m=elev.shape[0]
+    n=elev.shape[1]
 
+    import matplotlib
+    import matplotlib.pyplot as plt
 
+    x  = np.arange(n * 1.) * cs + xc;
+    y  = (m - np.arange(m * 1.)) * cs + yc;
+    v  = np.mgrid[-500:9000:25.]
+
+    plt.figure()
+    CS = plt.contour(x, y, elev, v)
+    plt.show()
+   
+    import contour
+    list_levels = contour.contour(elev, x , y, v)
+    
 if __name__ == '__main__':
      convert() 

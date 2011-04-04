@@ -58,6 +58,16 @@ def extract_data(fichier_asc="srtm_38_03.asc",
             new_xllcorner, new_yllcorner,
 	    cellsize , elevation]
 
+def write_osm(out_file):
+    fid=open(out_file,"w")
+    fid.write("<?xml version='1.0' encoding='UTF-8'?>"+\
+              "<osm version='0.5' generator='mkcntr'>"+\
+              "<bound box='-90,-180,90,180' origin='mkcntr'/>")
+
+    fid.write("</osm>\n");
+    fid.close()
+
+
 def convert(fichier_osm="data.osm",
              fichier_asc="srtm_38_03.asc", 
              lat_min=48.2299, 

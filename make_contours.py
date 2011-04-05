@@ -58,12 +58,28 @@ def extract_data(fichier_asc="srtm_38_03.asc",
             new_xllcorner, new_yllcorner,
 	    cellsize , elevation]
 
-def write_osm(out_file):
+def write_osm(out_file, contours):
     fid=open(out_file,"w")
     fid.write("<?xml version='1.0' encoding='UTF-8'?>"+\
-              "<osm version='0.5' generator='mkcntr'>"+\
+              "<osm version='0.5' generator='osm_contour'>"+\
               "<bound box='-90,-180,90,180' origin='mkcntr'/>")
 
+    clefs = contours.keys()
+    for i in xrange(len(clefs)):
+	l=contours[clefs[i]]
+	for k in xrange(len(l)):
+	  for m in xrange(len(l[k])):
+	     fid.write("<node id='%d-%d-%d' timestamp='0001-01-01T00:00:00' lat='%f' lon='%f' />\n"% (clefs[i], k, m, l[k][m][0], l[k][m][1] ))
+	
+	  fid.write("<way id='%d-%d' timestamp='0001-01-01T00:00:00'>\n" % (clefs[i], k))
+	  for m in xrange(len(l[k])):
+	     fid.write("<nd ref='%d-%d-%d' />\n" % (clefs[i], k, m))
+
+          fid.write("<tag k='contour' v='elevation' />\n")
+	  fid.write("<tag k='ele' v='%d' />\n" % clefs[i])
+          fid.write("<tag k='created_by' v='osm_contour' />\n")
+          fid.write("</way>\n")
+    
     fid.write("</osm>\n");
     fid.close()
 
@@ -93,7 +109,10 @@ def convert(fichier_osm="data.osm",
     plt.show()
    
     import contour
-    list_levels = contour.contour(elev, x , y, v)
+    contours = contour.contour(elev, x , y, v)
+   
+    write_osm("contour.osm", contours)
     
+
 if __name__ == '__main__':
      convert() 

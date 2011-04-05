@@ -690,15 +690,33 @@ needed.
 class ToMap:public CRaster
 {
    public:
+      toMap(const double * mat, const int m, const int n);
       double value(double x,double y);
       SPoint upper_bound();
       SPoint lower_bound();
+      ~toMap();
+   protected:
+      int _m;
+      int _n;
+      double * _mat;
 };
+
+ToMap::ToMap(const double *mat, const int m, const int n)
+{
+  _m = m;
+  _n = n; 
+  double * mat = new double[m*n];
+  std::copy(mat, mat + m*n, _mat);
+}
+
+ToMap::~ToMap()
+{
+  delete [] _mat;
+}
 
 double ToMap::value(double x, double y)
 {
-   if(((int)x==1)&&((int)y==1)) return 1;
-   else return 0;
+   assert (0 <=(int) (x) && (int) (y)  
 }
 
 SPoint ToMap::lower_bound()

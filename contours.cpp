@@ -673,20 +673,6 @@ CContour::~CContour()
 }
 
 
-#ifdef STANDALONE
-/*
-=============================================================================
-the following is just test code to try to test that everything works together
-alright, we need to create an object that inherits from CRaster (ToMap in
-this case) that defines three functions, two returning each the lower and
-upper bounds respectively, and a third that returns the value at a given
-point. As we are assuming that data is regularly spaced we do not need to
-determine the x or y coordinate at this point as the original code did,
-rather we leave that for the rendering step to do by scaling the values as 
-needed.
-=============================================================================
-*/
-
 class ToMap:public CRaster
 {
    public:
@@ -716,7 +702,12 @@ ToMap::~ToMap()
 
 double ToMap::value(double x, double y)
 {
-   assert (0 <=(int) (x) && (int) (y)  
+   int i = (int) x;
+   int j = (int) y;
+   assert (0 <=i && i <= _n);
+   assert (0 <=j && j <= _m);
+   return double _mat[i+n*j];
+
 }
 
 SPoint ToMap::lower_bound()
@@ -726,7 +717,7 @@ SPoint ToMap::lower_bound()
 
 SPoint ToMap::upper_bound()
 {
-   return SPoint(2,2);
+   return SPoint(n_,m_);
 }
 
 int main(int argc, char *argv[])
@@ -742,4 +733,3 @@ int main(int argc, char *argv[])
    printf("\n\n\n\t\tDumping Contour Map\n");
    map->dump();
 }
-#endif

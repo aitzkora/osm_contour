@@ -10,10 +10,12 @@ include_dirs = numpy.distutils.misc_util.get_numpy_include_dirs()
 setup (name = "contour_OSM",
        version = "0.1",
 
-       ext_modules = [Extension('contour',
-                                ['conrec.pyx'],
-                                include_dirs=include_dirs)],
-
+       ext_modules = [Extension('contours',
+                                ['contours.pyx','Contours.cpp'],
+                                language="c++",
+				include_dirs=include_dirs,
+				libraries=['stdc++'],
+				)],
        cmdclass = {'build_ext': build_ext}
        )
 

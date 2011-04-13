@@ -19,18 +19,33 @@
  ***************************************************************************/
 
 // based on the work of Paul Bourke and Nicholas Yue
-#include <stdio.h>
-#include <math.h>
-#include "contours.h"
-
+#include <cstdio>
+#include <cmath>
+#include <cassert>
+#include "Contours.h"
 //bool operator <(SPoint p1,SPoint p2){return((p1.x<p2.x));}
-bool operator <(SPoint p1, SPoint p2){return(((p1.x*(unsigned int)0xFFFFFFFF)+p1.y)<((p2.x*(unsigned int)0xFFFFFFFF)+p2.y));}
-bool operator <(SPair p1,SPair p2){return(p1.p1<p2.p1);}
-bool operator ==(SPoint p1,SPoint p2){return((EQ(p1.x,p2.x))&&(EQ(p1.y,p2.y)));}
-bool operator !=(SPoint p1,SPoint p2){return(!(EQ(p1.x,p2.x)&&!(EQ(p1.y,p2.y))));}
-SPoint operator +=(SPoint p, SVector v){return(SPoint(p.x+=v.dx,p.y+=v.dy));}
+
+bool contours::operator <(contours::SPoint p1, contours::SPoint p2){return(((p1.x*(unsigned int)0xFFFFFFFF)+p1.y)<((p2.x*(unsigned int)0xFFFFFFFF)+p2.y));}
+bool contours::operator <(contours::SPair p1,
+                          contours::SPair p2){return(p1.p1<p2.p1);}
+bool contours::operator ==(contours::SPoint p1,
+                           contours::SPoint p2){return((EQ(p1.x,p2.x))&&(EQ(p1.y,p2.y)));}
+bool contours::operator !=(contours::SPoint p1,
+                           contours::SPoint p2){return(!(EQ(p1.x,p2.x)&&!(EQ(p1.y,p2.y))));}
+contours::SPoint contours::operator +=(contours::SPoint p, 
+                                       contours::SVector v){return(contours::SPoint(p.x+=v.dx,p.y+=v.dy));}
+//bool operator <(SPoint p1, SPoint p2){return(((p1.x*(unsigned int)0xFFFFFFFF)+p1.y)<((p2.x*(unsigned int)0xFFFFFFFF)+p2.y));}
+//bool operator <(SPair p1,
+//                SPair p2){return(p1.p1<p2.p1);}
+//bool operator ==(SPoint p1,
+//                 SPoint p2){return((EQ(p1.x,p2.x))&&(EQ(p1.y,p2.y)));}
+//bool operator !=(SPoint p1,
+//                 SPoint p2){return(!(EQ(p1.x,p2.x)&&!(EQ(p1.y,p2.y))));}
+//SPoint operator +=(SPoint p, 
+//                   SVector v){return(SPoint(p.x+=v.dx,p.y+=v.dy));}
 
 
+using namespace contours;
 int CContourMap::contour(CRaster *r)
 {
 /*
@@ -673,25 +688,11 @@ CContour::~CContour()
 }
 
 
-class ToMap:public CRaster
-{
-   public:
-      toMap(const double * mat, const int m, const int n);
-      double value(double x,double y);
-      SPoint upper_bound();
-      SPoint lower_bound();
-      ~toMap();
-   protected:
-      int _m;
-      int _n;
-      double * _mat;
-};
-
 ToMap::ToMap(const double *mat, const int m, const int n)
 {
   _m = m;
   _n = n; 
-  double * mat = new double[m*n];
+  double * _mat = new double[m*n];
   std::copy(mat, mat + m*n, _mat);
 }
 
@@ -706,7 +707,7 @@ double ToMap::value(double x, double y)
    int j = (int) y;
    assert (0 <=i && i <= _n);
    assert (0 <=j && j <= _m);
-   return double _mat[i+n*j];
+   return _mat[i+_n*j];
 
 }
 
@@ -717,19 +718,19 @@ SPoint ToMap::lower_bound()
 
 SPoint ToMap::upper_bound()
 {
-   return SPoint(n_,m_);
+   return SPoint(_n,_m);
 }
 
-int main(int argc, char *argv[])
-{
-   ToMap *m=new ToMap;
-   CContourMap *map=new CContourMap;
-   map->generate_levels(0,1,3);
-   printf("Attempting to contour \n");
-   map->contour(m);
-   map->dump();
-   printf("Consolidating Vectors\n");
-   map->consolidate();
-   printf("\n\n\n\t\tDumping Contour Map\n");
-   map->dump();
-}
+//int main(int argc, char *argv[])
+//{
+//   ToMap *m=new ToMap;
+//   CContourMap *map=new CContourMap;
+//   map->generate_levels(0,1,3);
+//   printf("Attempting to contour \n");
+//   map->contour(m);
+//   map->dump();
+//   printf("Consolidating Vectors\n");
+//   map->consolidate();
+//   printf("\n\n\n\t\tDumping Contour Map\n");
+//   map->dump();
+//}

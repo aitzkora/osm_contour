@@ -31,6 +31,9 @@
 
 using namespace std;
 
+
+namespace contours {
+
 struct SVector
 {
    double dx,dy;
@@ -113,4 +116,18 @@ class CContourMap
       int n_levels;
       double *levels;      
 };
+
+class ToMap:public CRaster
+{
+   public:
+      ToMap(const double * mat, const int m, const int n);
+      double value(double x,double y);
+      SPoint upper_bound();
+      SPoint lower_bound();
+      ~ToMap();
+      int _m;
+      int _n;
+      double * _mat;
+};
+}; // fin namespace
 #endif

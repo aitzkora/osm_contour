@@ -688,13 +688,26 @@ CContour::~CContour()
 }
 
 
-ToMap::ToMap(const double *mat, const int m, const int n)
+ToMap::ToMap(int m, 
+             int n, 
+	     double *mat)
+      
 {
   _m = m;
-  _n = n; 
+  _n = n;
   double * _mat = new double[m*n];
   std::copy(mat, mat + m*n, _mat);
 }
+
+void ToMap::setMap(int m, int n, double * mat)
+{
+   if (_mat)
+      delete [] _mat;
+   _m = m;
+   _n = n;
+   std::copy(mat, mat +m*n, _mat);
+}   
+
 
 ToMap::~ToMap()
 {

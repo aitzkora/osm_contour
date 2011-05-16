@@ -120,8 +120,11 @@ class CContourMap
 class ToMap:public CRaster
 {
    public:
-      ToMap(const double * mat, const int m, const int n);
-      double value(double x,double y);
+      ToMap(int m = 0, 
+            int n = 0, 
+	    double * mat = NULL);
+      void setMap(int m, int n, double * mat);
+      double value(double x, double y);
       SPoint upper_bound();
       SPoint lower_bound();
       ~ToMap();

@@ -68,7 +68,7 @@ class CContour
       int reverse();
       int add_vector(SPoint start,SPoint end);
       int condense(double difference = 0.000000001);
-      int dump();
+      int dump(FILE *fp);
       bool closed(){return(_start==_end);}
       SPoint start(){return(_start);}
       SPoint end(){return(_end);}
@@ -91,7 +91,7 @@ class CContourLevel
 {
    public:
      CContourLevel(){contour_lines=NULL;raw=NULL;};
-     int dump();
+     int dump(FILE *fp);
      int merge();
      int consolidate();
      vector<CContour*> *contour_lines;
@@ -105,7 +105,7 @@ class CContourMap
       CContourMap();
       int generate_levels(double min,double max, int num);
       int add_segment(SPair t,int level);
-      int dump();
+      int dump(FILE *fp);
       int contour(CRaster *r);
       int consolidate();
       CContourLevel* level(int i){return((*contour_level)[i]);}

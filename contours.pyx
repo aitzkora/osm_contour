@@ -1,3 +1,4 @@
+from libc.stdio cimport * 
 cdef extern from "Contours.h" namespace "contours":
      cdef cppclass ToMap:
        int _m,_n
@@ -12,7 +13,7 @@ cdef extern from "Contours.h" namespace "contours":
         int generate_levels(double ,double , int )
         void contour(ToMap *)
         void consolidate()
-        void dump()
+        void dump(FILE *fp)
 cdef extern from "numpy/arrayobject.h":
     ctypedef int intp
     ctypedef extern class numpy.ndarray [object PyArrayObject]:
@@ -38,11 +39,15 @@ cdef class PyToMap:
            self.thisContour.generate_levels(min_elev, max_elev, num)
            self.thisContour.contour(self.thisMap)
            self.thisContour.consolidate()
-           self.thisContour.dump()
 	       
      def __dealloc__(self):
            del self.thisContour 
            del self.thisMap
      def __getitem__(self, index):
            return self.thisMap.value(index[0],index[1])
+     def dump_osm(self, filename):
+         cdef char * name = filename
+         cdef FILE * fp=fopen(name,"w")
+         self.thisContour.dump(fp)
+         fclose(fp)
 

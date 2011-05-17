@@ -325,15 +325,15 @@ int CContourMap::add_segment(SPair t, int level)
    return(0);
 }
 
-int CContourMap::dump()
+int CContourMap::dump(FILE *fp)
 {
    //sort the raw vectors if they exist
    vector<CContourLevel*>::iterator it=contour_level->begin();
    int l=0;
    while(it!=contour_level->end())
    {
-      printf("Contour data at level %d [%f]\n",l,levels[l]);
-      if(*it) (*it)->dump();
+      fprintf(fp,"Contour data at level %d [%f]\n",l,levels[l]);
+      if(*it) (*it)->dump(fp);
       it++;l++;
    }
    fflush(NULL);
@@ -375,36 +375,36 @@ vector, however functions exist to combine these vectors into groups (CContour)
 representing lines.
 */
 
-int CContourLevel::dump()
+int CContourLevel::dump(FILE *fp)
 {
 // iterate thru the vector dumping values to STDOUT as we go
 // this function is intended for debugging purposes only
-   printf("======================================================================\n");
+   fprintf(fp,"======================================================================\n");
    if(raw)
    {
-      printf("Raw vector data\n\n");
+      fprintf(fp,"Raw vector data\n\n");
       vector<SPair>::iterator it;
       it=raw->begin();
       while(it!=raw->end())
       {
          SPair t=*it;
-         printf("\t(%f, %f)\t(%f, %f)\n",t.p1.x,t.p1.y,t.p2.x,t.p2.y);
+         fprintf(fp,"\t(%f, %f)\t(%f, %f)\n",t.p1.x,t.p1.y,t.p2.x,t.p2.y);
          it++;
       }  
    }
    if(contour_lines)
    {
-      printf("Processed contour lines\n\n");
+      fprintf(fp,"Processed contour lines\n\n");
       vector<CContour*>::iterator it=contour_lines->begin();
       int c=1;
       while(it!=contour_lines->end())
       {
-         printf("Contour line %d:\n",c);
-         (*it)->dump();
+         fprintf(fp,"Contour line %d:\n",c);
+         (*it)->dump(fp);
          c++;it++;
       }
    }
-   printf("======================================================================\n");
+   fprintf(fp,"======================================================================\n");
    return(0);
 }
 
@@ -614,9 +614,9 @@ int CContour::merge(CContour *c)
    return(0);
 } 
 
-int CContour::dump()
+int CContour::dump(FILE *fp)
 {
-   printf("\tStart: [%f, %f]\n\tEnd: [%f, %f]\n\tComponents>\n",
+   fprintf(fp,"\tStart: [%f, %f]\n\tEnd: [%f, %f]\n\tComponents>\n",
           _start.x,_start.y,_end.x,_end.y);
    vector<SVector>::iterator cit=contour->begin();
    int c=1;
@@ -625,7 +625,7 @@ int CContour::dump()
    {
       p.x+=(*cit).dx;
       p.y+=(*cit).dy;
-      printf("\t\t{%f, %f}\t[%f,%f]\n",(*cit).dx,(*cit).dy,p.x,p.y);
+      fprintf(fp,"\t\t{%f, %f}\t[%f,%f]\n",(*cit).dx,(*cit).dy,p.x,p.y);
       c++,cit++;
    }
    return(0);
@@ -720,7 +720,6 @@ double ToMap::value(double x, double y)
    }
    else
       {
-        printf("[%d>=%d,%d>=%d] = %f\n",i,_n,j,_m,0.);
 	return 0.;
       }	
 

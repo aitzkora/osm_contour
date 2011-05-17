@@ -110,7 +110,7 @@ def convert(fichier_osm="data.osm",
    
     import contours
     niveaux = contours.PyToMap(elev,-500.,9000.,950)
-
+    niveaux.dump_osm("contours.osm")
     #write_osm("contour.osm", contours)
     
 

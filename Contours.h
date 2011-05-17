@@ -120,9 +120,7 @@ class CContourMap
 class ToMap:public CRaster
 {
    public:
-      ToMap(int m = 0, 
-            int n = 0, 
-	    double * mat = NULL);
+      ToMap();
       void setMap(int m, int n, double * mat);
       double value(double x, double y);
       SPoint upper_bound();

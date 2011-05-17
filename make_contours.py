@@ -104,13 +104,13 @@ def convert(fichier_osm="data.osm",
     y  = (m - np.arange(m * 1.)) * cs + yc;
     v  = np.mgrid[-500:9000:25.]
 
-    plt.figure()
-    CS = plt.contour(x, y, elev, v)
-    plt.show()
+    #Plt.figure()
+    #CS = plt.contour(x, y, elev, v)
+    #Plt.show()
    
     import contours
-    niveaux = contours.contour(elev, x , y, v)
-   
+    niveaux = contours.PyToMap(elev,-500.,9000.,950)
+
     #write_osm("contour.osm", contours)
     
 

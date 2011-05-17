@@ -688,15 +688,11 @@ CContour::~CContour()
 }
 
 
-ToMap::ToMap(int m, 
-             int n, 
-	     double *mat)
-      
+ToMap::ToMap()
 {
-  _m = m;
-  _n = n;
-  double * _mat = new double[m*n];
-  std::copy(mat, mat + m*n, _mat);
+  _n = 0;
+  _m = 0;
+  _mat = NULL;
 }
 
 void ToMap::setMap(int m, int n, double * mat)
@@ -705,6 +701,7 @@ void ToMap::setMap(int m, int n, double * mat)
       delete [] _mat;
    _m = m;
    _n = n;
+   _mat = new double [m*n]; 
    std::copy(mat, mat +m*n, _mat);
 }   
 
@@ -716,11 +713,16 @@ ToMap::~ToMap()
 
 double ToMap::value(double x, double y)
 {
-   int i = (int) x;
-   int j = (int) y;
-   assert (0 <=i && i <= _n);
-   assert (0 <=j && j <= _m);
-   return _mat[i+_n*j];
+   int i = static_cast<int>(x);
+   int j = static_cast<int>(y);
+   if ((0 <=i) && (i < _n) && (0 <=j) && (j < _m)) {
+     return _mat[i + _n * j];
+   }
+   else
+      {
+        printf("[%d>=%d,%d>=%d] = %f\n",i,_n,j,_m,0.);
+	return 0.;
+      }	
 
 }
 

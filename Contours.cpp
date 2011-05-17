@@ -728,12 +728,13 @@ double ToMap::value(double x, double y)
 
 SPoint ToMap::lower_bound()
 {
-   return SPoint(0,0);
+   return SPoint(0.,0.);
 }
 
 SPoint ToMap::upper_bound()
 {
-   return SPoint(_n,_m);
+   return SPoint(static_cast<double>(_m-1),
+                 static_cast<double>(_n-1));
 }
 
 //int main(int argc, char *argv[])

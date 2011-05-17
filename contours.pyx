@@ -12,7 +12,7 @@ cdef extern from "Contours.h" namespace "contours":
         int generate_levels(double ,double , int )
         void contour(ToMap *)
         void consolidate()
-
+        void dump()
 cdef extern from "numpy/arrayobject.h":
     ctypedef int intp
     ctypedef extern class numpy.ndarray [object PyArrayObject]:
@@ -37,7 +37,8 @@ cdef class PyToMap:
            self.thisContour = new CContourMap ()
            self.thisContour.generate_levels(min_elev, max_elev, num)
            self.thisContour.contour(self.thisMap)
-           #self.thisContour.consolidate()
+           self.thisContour.consolidate()
+           self.thisContour.dump()
 	       
      def __dealloc__(self):
            del self.thisContour 

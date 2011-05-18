@@ -97,8 +97,8 @@ def convert(fichier_osm="data.osm",
     m=elev.shape[0]
     n=elev.shape[1]
 
-    import matplotlib
-    import matplotlib.pyplot as plt
+    #import matplotlib
+    #import matplotlib.pyplot as plt
 
     x  = np.arange(n * 1.) * cs + xc;
     y  = (m - np.arange(m * 1.)) * cs + yc;
@@ -109,8 +109,11 @@ def convert(fichier_osm="data.osm",
     #Plt.show()
    
     import contours
-    niveaux = contours.PyToMap(elev,-500.,9000.,950)
-    niveaux.dump_osm("contours.osm")
+    min_ele = -500.
+    max_ele = 9000
+    num = int((max_ele-min_ele)/25.)
+    niveaux = contours.PyToMap(elev, min_ele, max_ele, num) 
+    #niveaux.dump_osm("contours.osm")
     #write_osm("contour.osm", contours)
     
 

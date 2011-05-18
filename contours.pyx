@@ -1,4 +1,20 @@
+# import stdio function
 from libc.stdio cimport * 
+# import std::vector
+cdef extern from "<vector>" namespace "std":
+    cdef cppclass vector[T]:
+        cppclass iterator:
+            T operator*()
+            iterator operator++()
+            bint operator==(iterator)
+            bint operator!=(iterator)
+        vector()
+        void push_back(T&)
+        T& operator[](int)
+        T& at(int)
+        iterator begin()
+        iterator end()
+# import Contour classes
 cdef extern from "Contours.h" namespace "contours":
      cdef cppclass ToMap:
        int _m,_n
@@ -14,6 +30,22 @@ cdef extern from "Contours.h" namespace "contours":
         void contour(ToMap *)
         void consolidate()
         void dump(FILE *fp)
+     cdef cppclass SVector:
+        double x
+        double y
+     cdef cppclass SPoint:
+         double x
+         double y
+     cdef cppclass SPair:
+         SPoint p1
+         SPoint p2
+     cdef cppclass CContour:
+         vector[SVector]  *contour	 
+     cdef cppclass CContourLevel:
+         vector[SPair] *raw
+         vector[CContour] *contour_lines
+          
+
 cdef extern from "numpy/arrayobject.h":
     ctypedef int intp
     ctypedef extern class numpy.ndarray [object PyArrayObject]:

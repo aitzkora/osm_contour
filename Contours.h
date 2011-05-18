@@ -121,8 +121,8 @@ class ToMap:public CRaster
 {
    public:
       ToMap();
-      void setMap(int m, int n, double * mat);
-      double value(double x, double y);
+      void setMap(int m, int n, double * mat); 
+      double value(double y, double x);
       SPoint upper_bound();
       SPoint lower_bound();
       ~ToMap();

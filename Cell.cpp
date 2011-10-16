@@ -47,17 +47,18 @@ Cell::Cell(const char * fichier_asc,
     for(int i = 0; i < last_row +1; i++)
     {
        double vide;
-       int j = 0;
-       if ( i >= first_row) {
-	    f_in >> elevation(i,j); 
-          #ifdef DEBUG
-                std::cout << elevation(i,j)  << std::endl;
-	  #endif
-       }
-       else {
+       for (int j = first_col; j < last_col; j++) {  
+           if ( i >= first_row) {
+	    f_in >> elevation(i-first_row,j-first_col); 
+            #ifdef DEBUG
+                std::cout << elevation(i-first_row,j-first_col)  
+		          << " " ;
+	    #endif
+           }
+           else {
 	    f_in >> vide;
+           }
        }
-	  j++;
        #ifdef DEBUG
           std::cout <<  std::endl;
        #endif 

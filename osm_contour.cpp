@@ -2,7 +2,6 @@
 
 
 int main(int argc, char * argv[]) {
-  Cell c;
-
+  Cell c(argv[1]);
   return 0;
 }

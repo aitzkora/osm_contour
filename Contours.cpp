@@ -22,7 +22,7 @@
 #include <cstdio>
 #include <cmath>
 #include <cassert>
-#include "Contours.h"
+#include "Contours.hpp"
 //bool operator <(SPoint p1,SPoint p2){return((p1.x<p2.x));}
 
 bool contours::operator <(contours::SPoint p1, contours::SPoint p2){return(((p1.x*(unsigned int)0xFFFFFFFF)+p1.y)<((p2.x*(unsigned int)0xFFFFFFFF)+p2.y));}

@@ -21,7 +21,7 @@ public:
 	double lat_max=48.3343,
         double long_max=7.0514);
         
-   ~Cell {}
+   ~Cell() {}
 
    Cell(const Cell & c);
 

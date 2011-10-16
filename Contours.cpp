@@ -614,6 +614,15 @@ int CContour::merge(CContour *c)
    return(0);
 } 
 
+CContour::CContour(CContour *c)
+{
+   _start = c->_start;
+   _end = c->_end;
+   contour = new vector<SVector>(c->contour->size());
+   std::copy(c->contour->begin(),c->contour->end(),
+             contour->begin());
+} 
+
 int CContour::dump(FILE *fp)
 {
    fprintf(fp,"\tStart: [%f, %f]\n\tEnd: [%f, %f]\n\tComponents>\n",

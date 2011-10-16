@@ -63,6 +63,7 @@ class CContour
 {
    public:
       CContour(){contour=NULL;}
+      CContour(CContour * cc); 
       ~CContour();
       int merge(CContour *c);
       int reverse();
@@ -108,6 +109,7 @@ class CContourMap
       int dump(FILE *fp);
       int contour(CRaster *r);
       int consolidate();
+      int get_n_levels() {return n_levels;}
       CContourLevel* level(int i){return((*contour_level)[i]);}
       double alt(int i){return(levels[i]);}
       ~CContourMap();

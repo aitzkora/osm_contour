@@ -48,13 +48,16 @@ Cell::Cell(const char * fichier_asc,
     {
        double vide;
        int j = 0;
-          if  (
-	  f_in >> elevation(i,j) 
+       if ( i >= first_row) {
+	    f_in >> elevation(i,j); 
           #ifdef DEBUG
                 std::cout << elevation(i,j)  << std::endl;
 	  #endif
-          j++;
        }
+       else {
+	    f_in >> vide;
+       }
+	  j++;
        #ifdef DEBUG
           std::cout <<  std::endl;
        #endif 

@@ -5,7 +5,7 @@
 #include <iostream>
 
 using namespace boost::numeric::ublas;
-class Cell : public {
+class Cell {
 public:   
    matrix<double> elevation;
    double cellsize;

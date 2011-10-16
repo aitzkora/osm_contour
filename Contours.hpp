@@ -123,7 +123,7 @@ class ToMap:public CRaster
 {
    public:
       ToMap();
-      void setMap(int m, int n, double * mat); 
+      void setMap(const cell & mat); 
       double value(double y, double x);
       SPoint upper_bound();
       SPoint lower_bound();

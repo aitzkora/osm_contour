@@ -1,7 +1,7 @@
 #include "osm_contour.hpp"
 #include <fstream>
 
-Cell::Cell(const char * fichier_asc, 
+ToMap::ToMap(const char * fichier_asc, 
            double lat_min, double long_min,
 	   double lat_max, double long_max) {
 
@@ -20,14 +20,14 @@ Cell::Cell(const char * fichier_asc,
        >> chaine >> cellsize;
   int NODATA ;
   f_in >> chaine >> NODATA;
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cout << "cols : "  << ncols << std::endl
            << "rows : "  << nrows << std::endl
            << "xcor : "  << xllcorner << std::endl
            << "ycor : "  << yllcorner << std::endl
            << "cell size : " << cellsize << std::endl
            << "NODATA : "  << NODATA << std::endl;
-#endif
+  #endif
   int  first_col = static_cast<int>((long_min - xllcorner) / cellsize);
   int  last_col = static_cast<int>((long_max - xllcorner) / cellsize);
   int  first_row = nrows - static_cast<int>((lat_max - yllcorner) / cellsize);
@@ -39,10 +39,10 @@ Cell::Cell(const char * fichier_asc,
   int  new_xllcorner = xllcorner + first_col * cellsize;
   int  new_yllcorner = yllcorner + (nrows-last_row) * cellsize;
 
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cout << "Extracting columns " << first_col << "-" 
             <<  "from rows" << first_row << "-"<< last_row << std::endl; 
-#endif  
+  #endif  
     elevation = matrix<double>(last_row-first_row+1,last_col-first_col+1);
     for(int i = 0; i < last_row +1; i++)
     {
@@ -71,27 +71,24 @@ Cell::Cell(const char * fichier_asc,
 
 }   
 
-Cell::Cell(const Cell & c) {
-
-       elevation = c.elevation;
-       ncols = c.ncols;
-       nrows = c.nrows;
-       xllcorner = c.xllcorner;
-       yllcorner = c.yllcorner;
-       cellsize = c.cellsize;
+double ToMap::value(double x, double y)
+{
+   int i = static_cast<int>((x-xllcorner)/cellsize);
+   int j = static_cast<int>((y-yllcorner)/cellsize);
+   assert(i >=0);
+   assert(i <= nrows);
+   assert(j >=0);
+   assert(j <= ncols);
+   return elevation(i,j);
 }
 
-Cell & Cell::operator=(const Cell & c) {
+SPoint ToMap::lower_bound()
+{
+   return SPoint(xllcorner,yllcorner);
+}
 
-       if (this == &c) {
-           return *this;
-       }
-       else { 
-           elevation = c.elevation;
-           ncols = c.ncols;
-           nrows = c.nrows;
-           xllcorner = c.xllcorner;
-           yllcorner = c.yllcorner;
-           cellsize = c.cellsize;
-       }
+SPoint ToMap::upper_bound()
+{
+   return SPoint((nrows-1)*cellsize+xllcorner,
+                 (ncols-1)*cellsize+yllcorner);
 }

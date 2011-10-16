@@ -1,6 +1,7 @@
 #ifndef __OSM_CONTOUR_HPP__
 #define __OSM_CONTOUR_HPP__
 
-#include "Cell.hpp"
+#include "Contours.hpp"
+#include "ToMap.hpp"
 
 #endif

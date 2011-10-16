@@ -108,14 +108,6 @@ def convert(fichier_osm="data.osm",
     #CS = Plt.contour(x, y, elev, v)
     #Plt.show()
    
-    import contours
-    min_ele = -500.
-    max_ele = 9000
-    num = int((max_ele-min_ele)/25.)
-    niveaux = contours.PyToMap(elev, min_ele, max_ele, num) 
-    my_struct = niveaux._buildstruct() 
-    #niveaux.dump_osm("contours.osm")
-    #write_osm("contour.osm", contours)
     
 
 if __name__ == '__main__':

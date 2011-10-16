@@ -1,11 +1,13 @@
-#ifndef _CELL_HPP_
-#define _CELL_HPP_
+#ifndef _TOMAP_HPP_
+#define _TOMAP_HPP_
 
+#include "Contours.hpp"
+#include "ToMap.hpp"
 #include <boost/numeric/ublas/matrix.hpp>
-#include <iostream>
 
 using namespace boost::numeric::ublas;
-class Cell {
+
+class ToMap : public CRaster{
 public:   
    matrix<double> elevation;
    double cellsize;
@@ -14,19 +16,17 @@ public:
    int xllcorner;
    int yllcorner;
 
-
-   Cell(const char * fichier_asc="srtm_38_03.asc", 
+   ToMap(const char * fichier_asc="srtm_38_03.asc", 
         double lat_min=48.2299, 
         double long_min=6.8489,
 	double lat_max=48.3343,
         double long_max=7.0514);
         
-   ~Cell() {}
+   ~ToMap() {}
 
-   Cell(const Cell & c);
-
-   Cell & operator=(const Cell & c);
- 
-
+   double value(double y, double x);
+   
+   SPoint upper_bound();
+   SPoint lower_bound();
 };
 #endif

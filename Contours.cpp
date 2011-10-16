@@ -19,33 +19,22 @@
  ***************************************************************************/
 
 // based on the work of Paul Bourke and Nicholas Yue
-#include <cstdio>
-#include <cmath>
-#include <cassert>
 #include "Contours.hpp"
+#include <algorithm>
+#include <fstream>
 //bool operator <(SPoint p1,SPoint p2){return((p1.x<p2.x));}
 
-bool contours::operator <(contours::SPoint p1, contours::SPoint p2){return(((p1.x*(unsigned int)0xFFFFFFFF)+p1.y)<((p2.x*(unsigned int)0xFFFFFFFF)+p2.y));}
-bool contours::operator <(contours::SPair p1,
-                          contours::SPair p2){return(p1.p1<p2.p1);}
-bool contours::operator ==(contours::SPoint p1,
-                           contours::SPoint p2){return((EQ(p1.x,p2.x))&&(EQ(p1.y,p2.y)));}
-bool contours::operator !=(contours::SPoint p1,
-                           contours::SPoint p2){return(!(EQ(p1.x,p2.x)&&!(EQ(p1.y,p2.y))));}
-contours::SPoint contours::operator +=(contours::SPoint p, 
-                                       contours::SVector v){return(contours::SPoint(p.x+=v.dx,p.y+=v.dy));}
-//bool operator <(SPoint p1, SPoint p2){return(((p1.x*(unsigned int)0xFFFFFFFF)+p1.y)<((p2.x*(unsigned int)0xFFFFFFFF)+p2.y));}
-//bool operator <(SPair p1,
-//                SPair p2){return(p1.p1<p2.p1);}
-//bool operator ==(SPoint p1,
-//                 SPoint p2){return((EQ(p1.x,p2.x))&&(EQ(p1.y,p2.y)));}
-//bool operator !=(SPoint p1,
-//                 SPoint p2){return(!(EQ(p1.x,p2.x)&&!(EQ(p1.y,p2.y))));}
-//SPoint operator +=(SPoint p, 
-//                   SVector v){return(SPoint(p.x+=v.dx,p.y+=v.dy));}
+bool operator <(SPoint p1, SPoint p2){return(((p1.x*(unsigned int)0xFFFFFFFF)+p1.y)<((p2.x*(unsigned int)0xFFFFFFFF)+p2.y));}
+bool operator <(SPair p1,
+                SPair p2){return(p1.p1<p2.p1);}
+bool operator ==(SPoint p1,
+                 SPoint p2){return((EQ(p1.x,p2.x))&&(EQ(p1.y,p2.y)));}
+bool operator !=(SPoint p1,
+                 SPoint p2){return(!(EQ(p1.x,p2.x)&&!(EQ(p1.y,p2.y))));}
+SPoint operator +=(SPoint p, 
+                   SVector v){return(SPoint(p.x+=v.dx,p.y+=v.dy));}
 
 
-using namespace contours;
 int CContourMap::contour(CRaster *r)
 {
 /*
@@ -122,12 +111,12 @@ int CContourMap::contour(CRaster *r)
    for (j=((int)r->upper_bound().x-1);j>=(int)r->lower_bound().x;j--) {
       for (i=(int)r->lower_bound().y;i<=(int)r->upper_bound().y-1;i++) {
          double temp1,temp2;
-         temp1 = min(r->value(i,j),r->value(i,j+1));
-         temp2 = min(r->value(i+1,j),r->value(i+1,j+1));
-         dmin = min(temp1,temp2);
-         temp1 = max(r->value(i,j),r->value(i,j+1));
-         temp2 = max(r->value(i+1,j),r->value(i+1,j+1));
-         dmax = max(temp1,temp2);
+         temp1 = std::min(r->value(i,j),r->value(i,j+1));
+         temp2 = std::min(r->value(i+1,j),r->value(i+1,j+1));
+         dmin = std::min(temp1,temp2);
+         temp1 = std::max(r->value(i,j),r->value(i,j+1));
+         temp2 = std::max(r->value(i+1,j),r->value(i+1,j+1));
+         dmax = std::max(temp1,temp2);
          if (dmax>=levels[0]&&dmin<=levels[n_levels-1]) {
             for (k=0;k<n_levels;k++) {
                if (levels[k]>=dmin&&levels[k]<=dmax) {
@@ -315,24 +304,24 @@ CContourMap::CContourMap()
 int CContourMap::add_segment(SPair t, int level)
 {
 // ensure that the object hierarchy has been allocated
-   if(!contour_level) contour_level=new vector<CContourLevel*>(n_levels);
+   if(!contour_level) contour_level=new std::vector<CContourLevel*>(n_levels);
    if(!(*contour_level)[level]) 
       (*contour_level)[level]=new CContourLevel;
    if(!(*contour_level)[level]->raw)
-      (*contour_level)[level]->raw=new vector<SPair>;
+      (*contour_level)[level]->raw=new std::vector<SPair>;
 // push the value onto the end of the vector
    (*contour_level)[level]->raw->push_back(t);
    return(0);
 }
 
-int CContourMap::dump(FILE *fp)
+int CContourMap::dump(std::ofstream & fp)
 {
    //sort the raw vectors if they exist
-   vector<CContourLevel*>::iterator it=contour_level->begin();
+   std::vector<CContourLevel*>::iterator it=contour_level->begin();
    int l=0;
    while(it!=contour_level->end())
    {
-      fprintf(fp,"Contour data at level %d [%f]\n",l,levels[l]);
+      fp << "Contour data at level " << l << "[" << levels[l] << "]" << std::endl;
       if(*it) (*it)->dump(fp);
       it++;l++;
    }
@@ -343,7 +332,7 @@ int CContourMap::dump(FILE *fp)
 int CContourMap::consolidate()
 {
    //sort the raw vectors if they exist
-   vector<CContourLevel*>::iterator it=contour_level->begin();
+   std::vector<CContourLevel*>::iterator it=contour_level->begin();
    while(it!=contour_level->end())
    {
       if(*it) (*it)->consolidate();
@@ -357,7 +346,7 @@ CContourMap::~CContourMap()
    if(levels) delete levels;
    if(contour_level)
    {
-      vector<CContourLevel*>::iterator it=contour_level->begin();
+      std::vector<CContourLevel*>::iterator it=contour_level->begin();
       while(it!=contour_level->end())
       {
          delete(*it);
@@ -375,46 +364,51 @@ vector, however functions exist to combine these vectors into groups (CContour)
 representing lines.
 */
 
-int CContourLevel::dump(FILE *fp)
+int CContourLevel::dump(std::ofstream  & fp)
 {
 // iterate thru the vector dumping values to STDOUT as we go
 // this function is intended for debugging purposes only
-   fprintf(fp,"======================================================================\n");
+   fp << "======================================================================" 
+      << std::endl;
    if(raw)
    {
-      fprintf(fp,"Raw vector data\n\n");
-      vector<SPair>::iterator it;
+      fp << "Raw vector data" << std::endl <<  std::endl;
+      std::vector<SPair>::iterator it;
       it=raw->begin();
       while(it!=raw->end())
       {
          SPair t=*it;
-         fprintf(fp,"\t(%f, %f)\t(%f, %f)\n",t.p1.x,t.p1.y,t.p2.x,t.p2.y);
+         fp << "(" << t.p1.x << "," << t.p1.y << ") " 
+	    << "(" << t.p2.x << "," << t.p2.y << ")"
+	    << std::endl;
          it++;
       }  
    }
    if(contour_lines)
    {
-      fprintf(fp,"Processed contour lines\n\n");
-      vector<CContour*>::iterator it=contour_lines->begin();
+      fp << "Processed contour lines" << std::endl
+                                      << std::endl;
+      std::vector<CContour*>::iterator it=contour_lines->begin();
       int c=1;
       while(it!=contour_lines->end())
       {
-         fprintf(fp,"Contour line %d:\n",c);
+         fp << "Contour line " << c << ":" << std::endl;
          (*it)->dump(fp);
          c++;it++;
       }
    }
-   fprintf(fp,"======================================================================\n");
+   fp << "======================================================================" 
+      << std::endl;
    return(0);
 }
 
 int CContourLevel::consolidate()
 {
-   vector<SPair>::iterator it;
+   std::vector<SPair>::iterator it;
    CContour *contour;
    int c=0;
    if(!raw) return(0);
-   if (!contour_lines) contour_lines=new vector<CContour*>;
+   if (!contour_lines) contour_lines=new std::vector<CContour*>;
    std::sort(raw->begin(),raw->end());
    while(!raw->empty())
    {
@@ -438,7 +432,7 @@ int CContourLevel::consolidate()
    delete raw;raw=NULL;
    fflush(NULL);
    c-=merge();
-   vector<CContour*>::iterator cit=contour_lines->begin();
+   std::vector<CContour*>::iterator cit=contour_lines->begin();
    while(cit!=contour_lines->end())
    {
       (*cit)->condense();
@@ -449,7 +443,7 @@ int CContourLevel::consolidate()
 
 int CContourLevel::merge()
 {
-   vector<CContour*>::iterator it,jt;
+   std::vector<CContour*>::iterator it,jt;
    int c=0;
    if(contour_lines->size()<2) return(0);
    it=contour_lines->begin();
@@ -542,7 +536,7 @@ CContourLevel::~CContourLevel()
    
    if(contour_lines)
    {
-      vector<CContour*>::iterator it=contour_lines->begin();
+      std::vector<CContour*>::iterator it=contour_lines->begin();
       while(it!=contour_lines->end())
       {
          delete (*it);
@@ -574,7 +568,7 @@ int CContour::add_vector(SPoint p1, SPoint p2)
 // and set the starting point for this contour   
    if(!contour)
    {
-      contour=new vector<SVector>;
+      contour=new std::vector<SVector>;
       _start=p1;
    }
 // insert the new vector to the end of the contour
@@ -592,8 +586,8 @@ int CContour::reverse()
    _start=t;
 // iterate thru the entire vector and reverse each individual element
 // inserting them into a new vector as we go
-   vector<SVector> *tmp=new vector<SVector>;
-   vector<SVector>::iterator it=contour->begin();
+   std::vector<SVector> *tmp=new std::vector<SVector>;
+   std::vector<SVector>::iterator it=contour->begin();
    while(it!=contour->end())
    {
       (*it).dx*=-1;
@@ -618,23 +612,25 @@ CContour::CContour(CContour *c)
 {
    _start = c->_start;
    _end = c->_end;
-   contour = new vector<SVector>(c->contour->size());
+   contour = new std::vector<SVector>(c->contour->size());
    std::copy(c->contour->begin(),c->contour->end(),
              contour->begin());
 } 
 
-int CContour::dump(FILE *fp)
+int CContour::dump(std::ofstream & fp)
 {
-   fprintf(fp,"\tStart: [%f, %f]\n\tEnd: [%f, %f]\n\tComponents>\n",
-          _start.x,_start.y,_end.x,_end.y);
-   vector<SVector>::iterator cit=contour->begin();
+   fp << " Start: [" << _start.x << "," << _start.y << "]" << std::endl
+      << " End: [" << _end.x << "," << _end.y << "]" << std::endl  
+      << " Components>" << std::endl;
+   std::vector<SVector>::iterator cit=contour->begin();
    int c=1;
    SPoint p=_start;
    while(cit!=contour->end())
    {
       p.x+=(*cit).dx;
       p.y+=(*cit).dy;
-      fprintf(fp,"\t\t{%f, %f}\t[%f,%f]\n",(*cit).dx,(*cit).dy,p.x,p.y);
+      fp << "  " << "{" <<(*cit).dx << "," << (*cit).dy << "}"
+         << " " << "[" << p.x << "," << p.y << "]" << std::endl;
       c++,cit++;
    }
    return(0);
@@ -655,7 +651,7 @@ int CContour::condense(double difference)
    identical vectors with no magnitude that can be reduced to a single data point.
    */
    
-   vector<SVector>::iterator it,jt;
+   std::vector<SVector>::iterator it,jt;
    double m1,m2;
    it=contour->begin();
    jt=it+1;
@@ -695,53 +691,3 @@ CContour::~CContour()
    this->contour->clear();
    delete this->contour;
 }
-
-
-ToMap::ToMap()
-{
-  _n = 0;
-  _m = 0;
-  _mat = NULL;
-}
-
-void ToMap::setMap(int m, int n, matrix<double> * mat)
-{
-   if (_mat)
-      delete [] _mat;
-   _m = m;
-   _n = n;
-   _mat = new double [m*n]; 
-   std::copy(mat, mat +m*n, _mat);
-}   
-
-
-ToMap::~ToMap()
-{
-  delete [] _mat;
-}
-
-double ToMap::value(double x, double y)
-{
-   int i = static_cast<int>(x);
-   int j = static_cast<int>(y);
-   if ((0 <=i) && (i < _n) && (0 <=j) && (j < _m)) {
-     return _mat[i + _n * j];
-   }
-   else
-      {
-	return 0.;
-      }	
-
-}
-
-SPoint ToMap::lower_bound()
-{
-   return SPoint(0.,0.);
-}
-
-SPoint ToMap::upper_bound()
-{
-   return SPoint(static_cast<double>(_m-1),
-                 static_cast<double>(_n-1));
-}
-

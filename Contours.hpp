@@ -21,18 +21,12 @@
 #define CONTOURS_H
 #include <vector>
 #include <algorithm>
+#include <fstream>
 
 #define DIFFERENCE 0.0005
 #define EQ(_x_,_y_) (((_x_-_y_<DIFFERENCE)&&(_y_-_x_<DIFFERENCE))?1:0)
 #define xsect(p1,p2) (h[p2]*xh[p1]-h[p1]*xh[p2])/(h[p2]-h[p1])
 #define ysect(p1,p2) (h[p2]*yh[p1]-h[p1]*yh[p2])/(h[p2]-h[p1])
-#define min(x,y) (x<y?x:y)
-#define max(x,y) (x>y?x:y)
-
-using namespace std;
-
-
-namespace contours {
 
 struct SVector
 {
@@ -69,11 +63,11 @@ class CContour
       int reverse();
       int add_vector(SPoint start,SPoint end);
       int condense(double difference = 0.000000001);
-      int dump(FILE *fp);
+      int dump(std::ofstream & fp);
       bool closed(){return(_start==_end);}
       SPoint start(){return(_start);}
       SPoint end(){return(_end);}
-      vector<SVector> *contour;
+      std::vector<SVector> *contour;
    private:
       SPoint _start,_end;
 };
@@ -92,11 +86,11 @@ class CContourLevel
 {
    public:
      CContourLevel(){contour_lines=NULL;raw=NULL;};
-     int dump(FILE *fp);
+     int dump(std::ofstream & fp);
      int merge();
      int consolidate();
-     vector<CContour*> *contour_lines;
-     vector<SPair> *raw;
+     std::vector<CContour*> *contour_lines;
+     std::vector<SPair> *raw;
      ~CContourLevel();
 }; 
 
@@ -106,7 +100,7 @@ class CContourMap
       CContourMap();
       int generate_levels(double min,double max, int num);
       int add_segment(SPair t,int level);
-      int dump(FILE *fp);
+      int dump(std::ofstream & fp);
       int contour(CRaster *r);
       int consolidate();
       int get_n_levels() {return n_levels;}
@@ -114,23 +108,9 @@ class CContourMap
       double alt(int i){return(levels[i]);}
       ~CContourMap();
    private:
-      vector<CContourLevel*> *contour_level;
+      std::vector<CContourLevel*> *contour_level;
       int n_levels;
       double *levels;      
 };
 
-class ToMap:public CRaster
-{
-   public:
-      ToMap();
-      void setMap(const cell & mat); 
-      double value(double y, double x);
-      SPoint upper_bound();
-      SPoint lower_bound();
-      ~ToMap();
-      int _m;
-      int _n;
-      double * _mat;
-};
-}; // fin namespace
 #endif

@@ -4,7 +4,12 @@
 int main(int argc, char * argv[]) {
   ToMap m(argv[1]);
   CContourMap *map=new CContourMap;
-  map->generate_levels(0,1,3);
+  int min_ele = -500;
+  int max_ele = 9000;
+  int step = 25;
+  int num = (max_ele-min_ele)/step;
+  
+  map->generate_levels(min_ele,max_ele,num);
   std::cout << "Attempting to contour" << std::endl;
   map->contour(&m);
   

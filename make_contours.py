@@ -104,11 +104,9 @@ def convert(fichier_osm="data.osm",
     y  = (m - np.arange(m * 1.)) * cs + yc;
     v  = np.mgrid[-500:9000:25.]
 
-    #Plt.figure()
-    #CS = Plt.contour(x, y, elev, v)
-    #Plt.show()
-   
-    
+    Plt.figure()
+    CS = Plt.contour(x, y, elev, v)
+    Plt.show()
 
 if __name__ == '__main__':
      convert() 

@@ -1,14 +1,15 @@
 #ifndef _TOMAP_HPP_
 #define _TOMAP_HPP_
 
-#include "Contours.hpp"
-#include "ToMap.hpp"
 #include <boost/numeric/ublas/matrix.hpp>
+#include "Points.hpp"
 
 using namespace boost::numeric::ublas;
 
-class ToMap : public CRaster{
+class ToMap {
 public:   
+   std::vector<double> x_array;
+   std::vector<double> y_array;
    matrix<double> elevation;
    double cellsize;
    int ncols;
@@ -24,7 +25,7 @@ public:
         
    ~ToMap() {}
 
-   double value(double y, double x);
+   double value(int x, int y);
    
    SPoint upper_bound();
    SPoint lower_bound();

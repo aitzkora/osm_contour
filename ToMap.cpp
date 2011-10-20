@@ -3,7 +3,9 @@
 
 ToMap::ToMap(const char * fichier_asc, 
            double lat_min, double long_min,
-	   double lat_max, double long_max) {
+	   double lat_max, double long_max):x_array(std::vector<double>(10)),
+                                            y_array(std::vector<double>(10)) 
+	   {
 
   std::ifstream f_in(fichier_asc, std::ifstream::in);
   #ifdef DEBUG
@@ -43,38 +45,46 @@ ToMap::ToMap(const char * fichier_asc,
   std::cout << "Extracting columns " << first_col << "-" 
             <<  "from rows" << first_row << "-"<< last_row << std::endl; 
   #endif  
-    elevation = matrix<double>(last_row-first_row+1,last_col-first_col+1);
-    for(int i = 0; i < last_row +1; i++)
-    {
-       double vide;
-       for (int j = first_col; j < last_col; j++) {  
-           if ( i >= first_row) {
-	    f_in >> elevation(i-first_row,j-first_col); 
-            #ifdef DEBUG
-                std::cout << elevation(i-first_row,j-first_col)  
-		          << " " ;
-	    #endif
-           }
-           else {
-	    f_in >> vide;
-           }
-       }
-       #ifdef DEBUG
-          std::cout <<  std::endl;
-       #endif 
-    }
-    f_in.close();
-    ncols = new_ncols;
-    nrows = new_nrows;
-    xllcorner = new_xllcorner;
-    yllcorner = new_yllcorner;
+  elevation = matrix<double>(last_row-first_row+1,last_col-first_col+1);
+  for(int i = 0; i < last_row +1; i++)
+  {
+     double vide;
+     for (int j = first_col; j < last_col; j++) {  
+         if ( i >= first_row) {
+          f_in >> elevation(i-first_row,j-first_col); 
+          #ifdef DEBUG
+              std::cout << elevation(i-first_row,j-first_col)  
+      	          << " " ;
+          #endif
+         }
+         else {
+          f_in >> vide;
+         }
+     }
+     #ifdef DEBUG
+        std::cout <<  std::endl;
+     #endif 
+  }
+  f_in.close();
+  ncols = new_ncols;
+  nrows = new_nrows;
+  xllcorner = new_xllcorner;
+  yllcorner = new_yllcorner;
+ 
+  x_array.resize(nrows,0);
+  y_array.resize(ncols,0);
+  for(int i = 0; i < nrows; ++i) {
+       x_array[i] = i * cellsize + xllcorner;
+  }
+    
+  for(int j = 0; j < ncols; ++j) {
+       y_array[j] = (ncols-j) * cellsize + yllcorner;
+  }
 
 }   
 
-double ToMap::value(double x, double y)
+double ToMap::value(int j, int i)
 {
-   int i = static_cast<int>((x-xllcorner)/cellsize);
-   int j = static_cast<int>((y-yllcorner)/cellsize);
    assert(i >=0);
    assert(i <= nrows);
    assert(j >=0);
@@ -84,11 +94,10 @@ double ToMap::value(double x, double y)
 
 SPoint ToMap::lower_bound()
 {
-   return SPoint(xllcorner,yllcorner);
+   return SPoint(0,0);
 }
 
 SPoint ToMap::upper_bound()
 {
-   return SPoint((nrows-1)*cellsize+xllcorner,
-                 (ncols-1)*cellsize+yllcorner);
+   return SPoint((nrows-1),(ncols-1));
 }

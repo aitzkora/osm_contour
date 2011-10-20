@@ -22,20 +22,9 @@
 #include "Contours.hpp"
 #include <algorithm>
 #include <fstream>
-//bool operator <(SPoint p1,SPoint p2){return((p1.x<p2.x));}
-
-bool operator <(SPoint p1, SPoint p2){return(((p1.x*(unsigned int)0xFFFFFFFF)+p1.y)<((p2.x*(unsigned int)0xFFFFFFFF)+p2.y));}
-bool operator <(SPair p1,
-                SPair p2){return(p1.p1<p2.p1);}
-bool operator ==(SPoint p1,
-                 SPoint p2){return((EQ(p1.x,p2.x))&&(EQ(p1.y,p2.y)));}
-bool operator !=(SPoint p1,
-                 SPoint p2){return(!(EQ(p1.x,p2.x)&&!(EQ(p1.y,p2.y))));}
-SPoint operator +=(SPoint p, 
-                   SVector v){return(SPoint(p.x+=v.dx,p.y+=v.dy));}
 
 
-int CContourMap::contour(CRaster *r)
+int CContourMap::contour(ToMap *r)
 {
 /*
    this routine is coppied almost verbatim form Nicholas Yue's C++ implememtation 
@@ -127,12 +116,12 @@ int CContourMap::contour(CRaster *r)
 		// start from zero
 		//=============================================================
                         h[m] = r->value(i+im[m-1],j+jm[m-1])-levels[k];
-                        xh[m] = i+im[m-1];
-                        yh[m] = j+jm[m-1];
+                        xh[m] = r->x_array[i+im[m-1]];
+                        yh[m] = r->y_array[j+jm[m-1]];
                      } else {
                         h[0] = 0.25*(h[1]+h[2]+h[3]+h[4]);
-                        xh[0]=0.5*(i+i+1);
-                        yh[0]=0.5*(j+j+1);
+                        xh[0]=0.5*(r->x_array[i]+r->x_array[i+1]);
+                        yh[0]=0.5*(r->y_array[j]+r->y_array[j+1]);
                      }
                      if (h[m]>0.0) {
                         sh[m] = 1;
@@ -325,7 +314,6 @@ int CContourMap::dump(std::ofstream & fp)
       if(*it) (*it)->dump(fp);
       it++;l++;
    }
-   fflush(NULL);
    return(0);
 }
 
@@ -430,7 +418,6 @@ int CContourLevel::consolidate()
       contour_lines->push_back(contour);
    }
    delete raw;raw=NULL;
-   fflush(NULL);
    c-=merge();
    std::vector<CContour*>::iterator cit=contour_lines->begin();
    while(cit!=contour_lines->end())

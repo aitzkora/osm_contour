@@ -23,35 +23,11 @@
 #include <algorithm>
 #include <fstream>
 
-#define DIFFERENCE 0.0005
-#define EQ(_x_,_y_) (((_x_-_y_<DIFFERENCE)&&(_y_-_x_<DIFFERENCE))?1:0)
+#include "Points.hpp"
+#include "ToMap.hpp"
 #define xsect(p1,p2) (h[p2]*xh[p1]-h[p1]*xh[p2])/(h[p2]-h[p1])
 #define ysect(p1,p2) (h[p2]*yh[p1]-h[p1]*yh[p2])/(h[p2]-h[p1])
 
-struct SVector
-{
-   double dx,dy;
-};
-
-struct SPoint
-{
-   SPoint(double x,double y){this->x=x;this->y=y;}
-   SPoint(){}
-   double x,y;
-};
-
-struct SPair
-{
-   SPair(SPoint p1, SPoint p2){this->p1=p1;this->p2=p2;}
-   SPair reverse(){return(SPair(p2,p1));}
-   SPoint p1,p2;
-};
-
-bool operator <(SPoint p1, SPoint p2);
-bool operator <(SPair p1,SPair p2);
-bool operator ==(SPoint p1,SPoint p2);
-bool operator !=(SPoint p1,SPoint p2);
-SPoint operator +=(SPoint p, SVector v);
 
 class CContour
 {
@@ -70,16 +46,6 @@ class CContour
       std::vector<SVector> *contour;
    private:
       SPoint _start,_end;
-};
-
-class CRaster
-{
-   public:
-      CRaster(){};
-      virtual double value(double, double){return(0);};
-      virtual SPoint upper_bound(){return(SPoint(0,0));};
-      virtual SPoint lower_bound(){return(SPoint(0,0));};
-      virtual ~CRaster(){};
 };
 
 class CContourLevel
@@ -101,7 +67,7 @@ class CContourMap
       int generate_levels(double min,double max, int num);
       int add_segment(SPair t,int level);
       int dump(std::ofstream & fp);
-      int contour(CRaster *r);
+      int contour(ToMap *r);
       int consolidate();
       int get_n_levels() {return n_levels;}
       CContourLevel* level(int i){return((*contour_level)[i]);}

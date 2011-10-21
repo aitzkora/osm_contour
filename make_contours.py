@@ -109,4 +109,4 @@ def convert(fichier_osm="data.osm",
     Plt.show()
 
 if __name__ == '__main__':
-     convert() 
+     convert("data.osm", "srtm_38_03.asc", 48.2998,6.935,48.312,6.950)

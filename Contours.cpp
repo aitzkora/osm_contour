@@ -23,6 +23,8 @@
 #include <algorithm>
 #include <fstream>
 
+#define xsect(p1,p2) (h[p2]*xh[p1]-h[p1]*xh[p2])/(h[p2]-h[p1])
+#define ysect(p1,p2) (h[p2]*yh[p1]-h[p1]*yh[p2])/(h[p2]-h[p1])
 
 int CContourMap::contour(ToMap *r)
 {
@@ -317,6 +319,76 @@ int CContourMap::dump(std::ofstream & fp)
    return(0);
 }
 
+int CContourMap::dump_osm(std::ofstream & fp)
+{
+   fp << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl
+      << "<osm version='0.5' generator='osm_contour'>"
+      << "<bound box='-90,-180,90,180' origin='mkcntr'/>"
+      << std::endl;
+   
+   // writing all the nodes in a primary pass
+   for (std::vector<CContourLevel*>::iterator i  = contour_level->begin(); 
+                                              i != contour_level->end(); i++)
+   {
+      if (*i && (*i)->contour_lines ) { 
+      for(std::vector<CContour*>::iterator j  = (*i)->contour_lines->begin();
+                                           j != (*i)->contour_lines->end(); ++j) {
+          if (*j && (*j)->contour) { 
+             double px = (*j)->start().x;
+	     double py = (*j)->start().y;
+	     for (std::vector<SVector>::iterator k  =  (*j)->contour->begin() ;
+	                                         k !=  (*j)->contour->end() ; ++k) {
+		 fp << "<node id ='" << distance( contour_level->begin(), i) 
+		            << "-"   << distance( (*i)->contour_lines->begin(), j)
+			    << "-"   << distance( (*j)->contour->begin(), k)
+			    << "' timestamp='0001-01-01T00:00:00'";
+	         px += k->dx;
+		 py += k->dy;
+		 fp << " lat='"<< px << "'"
+		    << " long='" << py << "'/>" 
+		    << std::endl;
+		    
+              } //fin for k
+           } // fin *j != NULL
+	 } // fin  for j    
+      } // fin *i!=NULL
+   } // fin for i
+   
+   
+   // writing all the way in a primary pass
+   for (std::vector<CContourLevel*>::iterator i  = contour_level->begin(); 
+                                              i != contour_level->end(); i++)
+   {
+      if (*i && (*i)->contour_lines ) { 
+      for(std::vector<CContour*>::iterator j  = (*i)->contour_lines->begin();
+                                           j != (*i)->contour_lines->end(); ++j) {
+          if (*j && (*j)->contour) { 
+	     fp << "<way id='" 
+	        << distance( contour_level->begin(), i) 
+                << "-"   << distance( (*i)->contour_lines->begin(), j)
+	        << "'"  << " timestamp='0001-01-01T00:00:00'>"
+		<< std::endl;
+	     for (std::vector<SVector>::iterator k  =  (*j)->contour->begin() ;
+	                                         k !=  (*j)->contour->end() ; ++k) {
+		 fp << "<nd ref ='" << distance( contour_level->begin(), i) 
+		            << "-" << distance( (*i)->contour_lines->begin(), j)
+			    << "-" << distance( (*j)->contour->begin(), k)
+			    << "'/>" << std::endl;
+		    
+              } //fin for k
+            fp << "<tag k='contour' v='elevation' />" << std::endl;
+	    fp << "<tag k='ele' v='" << levels[distance( contour_level->begin(), i)]
+	       << "' />" << std::endl;
+
+	    fp << "</way>" << std::endl;
+
+	   } // fin *j != NULL
+	 } // fin  for j    
+      } // fin *i!=NULL
+   } // fin for i
+   fp << "</osm>" << std::endl; 
+   return(0);
+}
 int CContourMap::consolidate()
 {
    //sort the raw vectors if they exist
@@ -347,7 +419,7 @@ CContourMap::~CContourMap()
 /*
 ===============================================================================
 the CContourLevel class contains all the contour data for any given contour 
-level. initially this data is storred in point to point format in the raw
+level. initially this data is stored in point to point format in the raw
 vector, however functions exist to combine these vectors into groups (CContour)
 representing lines.
 */

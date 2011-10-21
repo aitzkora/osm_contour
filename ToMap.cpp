@@ -8,7 +8,7 @@ ToMap::ToMap(const char * fichier_asc,
 	   {
 
   std::ifstream f_in(fichier_asc, std::ifstream::in);
-  #ifdef DEBUG
+  #ifndef NDEBUG
   if (!f_in.good()) {
       std::cerr << "File " <<  fichier_asc << "not Found " 
                 << std::endl; 
@@ -22,7 +22,7 @@ ToMap::ToMap(const char * fichier_asc,
        >> chaine >> cellsize;
   int NODATA ;
   f_in >> chaine >> NODATA;
-  #ifdef DEBUG
+  #ifndef NDEBUG
   std::cout << "cols : "  << ncols << std::endl
            << "rows : "  << nrows << std::endl
            << "xcor : "  << xllcorner << std::endl
@@ -41,7 +41,7 @@ ToMap::ToMap(const char * fichier_asc,
   int  new_xllcorner = xllcorner + first_col * cellsize;
   int  new_yllcorner = yllcorner + (nrows-last_row) * cellsize;
 
-  #ifdef DEBUG
+  #ifndef NDEBUG
   std::cout << "Extracting columns " << first_col << "-" 
             <<  "from rows" << first_row << "-"<< last_row << std::endl; 
   #endif  
@@ -52,7 +52,7 @@ ToMap::ToMap(const char * fichier_asc,
      for (int j = first_col; j < last_col; j++) {  
          if ( i >= first_row) {
           f_in >> elevation(i-first_row,j-first_col); 
-          #ifdef DEBUG
+          #ifndef NDEBUG
               std::cout << elevation(i-first_row,j-first_col)  
       	          << " " ;
           #endif
@@ -61,7 +61,7 @@ ToMap::ToMap(const char * fichier_asc,
           f_in >> vide;
          }
      }
-     #ifdef DEBUG
+     #ifndef NDEBUG
         std::cout <<  std::endl;
      #endif 
   }

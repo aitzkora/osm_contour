@@ -25,9 +25,6 @@
 
 #include "Points.hpp"
 #include "ToMap.hpp"
-#define xsect(p1,p2) (h[p2]*xh[p1]-h[p1]*xh[p2])/(h[p2]-h[p1])
-#define ysect(p1,p2) (h[p2]*yh[p1]-h[p1]*yh[p2])/(h[p2]-h[p1])
-
 
 class CContour
 {
@@ -67,6 +64,7 @@ class CContourMap
       int generate_levels(double min,double max, int num);
       int add_segment(SPair t,int level);
       int dump(std::ofstream & fp);
+      int dump_osm(std::ofstream &fp);
       int contour(ToMap *r);
       int consolidate();
       int get_n_levels() {return n_levels;}

@@ -2,7 +2,7 @@
 #include <iostream>
 
 int main(int argc, char * argv[]) {
-  ToMap m(argv[1],48.2998,6.935,48.312,6.950);
+  Map m(argv[1],48.2998,6.935,48.312,6.950);
   CContourMap *map=new CContourMap;
   int min_ele = 300;
   int max_ele = 700;

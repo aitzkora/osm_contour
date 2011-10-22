@@ -1,7 +1,7 @@
 #include "osm_contour.hpp"
 #include <fstream>
 
-ToMap::ToMap(const char * fichier_asc, 
+Map::Map(const char * fichier_asc, 
            double lat_min, double long_min,
 	   double lat_max, double long_max):x_array(std::vector<double>(10)),
                                             y_array(std::vector<double>(10)) 
@@ -83,7 +83,7 @@ ToMap::ToMap(const char * fichier_asc,
 
 }   
 
-double ToMap::value(int j, int i)
+double Map::value(int j, int i)
 {
    assert(i >=0);
    assert(i <= nrows);
@@ -92,12 +92,12 @@ double ToMap::value(int j, int i)
    return elevation(i,j);
 }
 
-SPoint ToMap::lower_bound()
+SPoint Map::lower_bound()
 {
    return SPoint(0,0);
 }
 
-SPoint ToMap::upper_bound()
+SPoint Map::upper_bound()
 {
    return SPoint((nrows-1),(ncols-1));
 }

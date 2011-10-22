@@ -2,6 +2,6 @@
 #define __OSM_CONTOUR_HPP__
 
 #include "Contours.hpp"
-#include "ToMap.hpp"
+#include "Map.hpp"
 
 #endif

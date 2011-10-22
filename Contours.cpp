@@ -20,6 +20,7 @@
 
 // based on the work of Paul Bourke and Nicholas Yue
 #include "Contours.hpp"
+#include <iomanip>
 #include <algorithm>
 #include <fstream>
 
@@ -338,15 +339,16 @@ int CContourMap::dump_osm(std::ofstream & fp)
 	     double py = (*j)->start().y;
 	     for (std::vector<SVector>::iterator k  =  (*j)->contour->begin() ;
 	                                         k !=  (*j)->contour->end() ; ++k) {
-		 fp << "<node id ='" << distance( contour_level->begin(), i) 
-		            << "-"   << distance( (*i)->contour_lines->begin(), j)
-			    << "-"   << distance( (*j)->contour->begin(), k)
-			    << "' timestamp='0001-01-01T00:00:00'";
+		 fp << "<node id ='" << std::setfill('0') << std::setw(3) << distance( contour_level->begin(), i) 
+		            << ""    << std::setfill('0') << std::setw(3) << distance( (*i)->contour_lines->begin(), j)
+			    << ""    << std::setfill('0') << std::setw(3) << distance( (*j)->contour->begin(), k)
+			    << "' ";
 	         px += k->dx;
 		 py += k->dy;
-		 fp << " lat='"<< px << "'"
-		    << " long='" << py << "'/>" 
-		    << std::endl;
+		 fp << " lon='" << std::fixed << std::setprecision(5) << px << "'"
+	            << " lat='" << std::fixed << std::setprecision(5) << py 
+		    << "' user='aitzkora' visible='true' timestamp='0001-01-01T00:00:00'"
+		    << " />" << std::endl;
 		    
               } //fin for k
            } // fin *j != NULL
@@ -364,15 +366,15 @@ int CContourMap::dump_osm(std::ofstream & fp)
                                            j != (*i)->contour_lines->end(); ++j) {
           if (*j && (*j)->contour) { 
 	     fp << "<way id='" 
-	        << distance( contour_level->begin(), i) 
-                << "-"   << distance( (*i)->contour_lines->begin(), j)
+	        << std::setfill('0')  << std::setw(3) << distance( contour_level->begin(), i)
+                << std::setfill('0')  << std::setw(3) << distance( (*i)->contour_lines->begin(), j)
 	        << "'"  << " timestamp='0001-01-01T00:00:00'>"
 		<< std::endl;
 	     for (std::vector<SVector>::iterator k  =  (*j)->contour->begin() ;
 	                                         k !=  (*j)->contour->end() ; ++k) {
-		 fp << "<nd ref ='" << distance( contour_level->begin(), i) 
-		            << "-" << distance( (*i)->contour_lines->begin(), j)
-			    << "-" << distance( (*j)->contour->begin(), k)
+		 fp << "<nd ref ='" << std::setfill('0')  << std::setw(3) << distance( contour_level->begin(), i) 
+		            << ""  << std::setfill('0')  << std::setw(3) << distance( (*i)->contour_lines->begin(), j)
+			    << ""  << std::setfill('0') << std::setw(3) << distance( (*j)->contour->begin(), k)
 			    << "'/>" << std::endl;
 		    
               } //fin for k

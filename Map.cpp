@@ -45,7 +45,7 @@ Map::Map(const char * fichier_asc,
   std::cout << "Extracting columns " << first_col << "-" 
             <<  "from rows" << first_row << "-"<< last_row << std::endl; 
   #endif  
-  elevation = matrix<double>(last_row-first_row+1,last_col-first_col+1);
+  elevation = matrix<double>(new_nrows+1,new_ncols+1);
   for(int i = 0; i < last_row +1; i++)
   {
      double vide;
@@ -73,11 +73,11 @@ Map::Map(const char * fichier_asc,
  
   x_array.resize(nrows,0);
   y_array.resize(ncols,0);
-  for(int i = 0; i < nrows; ++i) {
+  for(int i = 0; i < ncols; ++i) {
        x_array[i] = i * cellsize + xllcorner;
   }
     
-  for(int j = 0; j < ncols; ++j) {
+  for(int j = 0; j < nrows; ++j) {
        y_array[j] = (ncols-j) * cellsize + yllcorner;
   }
 

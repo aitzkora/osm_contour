@@ -3,7 +3,7 @@
 
 int main(int argc, char * argv[]) {
   Map m(argv[1],48.2998,6.935,48.312,6.950);
-  CContourMap *map=new CContourMap;
+  ContourMap *map=new ContourMap;
   int min_ele = 300;
   int max_ele = 700;
   int step = 25;

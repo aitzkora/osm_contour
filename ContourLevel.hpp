@@ -17,64 +17,27 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef CONTOURS_H
-#define CONTOURS_H
+#ifndef _CONTOURSLEVEL_HPP
+#define _CONTOURSLEVEL_HPP
 #include <vector>
-#include <algorithm>
 #include <fstream>
 
 #include "Points.hpp"
-#include "Map.hpp"
+#include "Contour.hpp"
 
-class CContour
+class ContourLevel
 {
    public:
-      CContour(){contour=NULL;}
-      CContour(CContour * cc); 
-      ~CContour();
-      int merge(CContour *c);
-      int reverse();
-      int add_vector(SPoint start,SPoint end);
-      int condense(double difference = 0.000000001);
-      int dump(std::ofstream & fp);
-      bool closed(){return(_start==_end);}
-      SPoint start(){return(_start);}
-      SPoint end(){return(_end);}
-      std::vector<SVector> *contour;
-   private:
-      SPoint _start,_end;
-};
-
-class CContourLevel
-{
-   public:
-     CContourLevel(){contour_lines=NULL;raw=NULL;};
+     ContourLevel(){ contour_lines=NULL;
+                     raw=NULL;};
+     ~ContourLevel();
+     
      int dump(std::ofstream & fp);
      int merge();
      int consolidate();
-     std::vector<CContour*> *contour_lines;
+     std::vector<Contour*> *contour_lines;
      std::vector<SPair> *raw;
-     ~CContourLevel();
 }; 
 
-class CContourMap
-{
-   public:
-      CContourMap();
-      int generate_levels(double min,double max, int num);
-      int add_segment(SPair t,int level);
-      int dump(std::ofstream & fp);
-      int dump_osm(std::ofstream &fp);
-      int contour(Map *r);
-      int consolidate();
-      int get_n_levels() {return n_levels;}
-      CContourLevel* level(int i){return((*contour_level)[i]);}
-      double alt(int i){return(levels[i]);}
-      ~CContourMap();
-   private:
-      std::vector<CContourLevel*> *contour_level;
-      int n_levels;
-      double *levels;      
-};
 
 #endif

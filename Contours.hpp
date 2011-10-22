@@ -24,7 +24,7 @@
 #include <fstream>
 
 #include "Points.hpp"
-#include "ToMap.hpp"
+#include "Map.hpp"
 
 class CContour
 {
@@ -65,7 +65,7 @@ class CContourMap
       int add_segment(SPair t,int level);
       int dump(std::ofstream & fp);
       int dump_osm(std::ofstream &fp);
-      int contour(ToMap *r);
+      int contour(Map *r);
       int consolidate();
       int get_n_levels() {return n_levels;}
       CContourLevel* level(int i){return((*contour_level)[i]);}

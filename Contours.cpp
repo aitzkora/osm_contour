@@ -26,7 +26,7 @@
 #define xsect(p1,p2) (h[p2]*xh[p1]-h[p1]*xh[p2])/(h[p2]-h[p1])
 #define ysect(p1,p2) (h[p2]*yh[p1]-h[p1]*yh[p2])/(h[p2]-h[p1])
 
-int CContourMap::contour(ToMap *r)
+int CContourMap::contour(Map *r)
 {
 /*
    this routine is coppied almost verbatim form Nicholas Yue's C++ implememtation 

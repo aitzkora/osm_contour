@@ -1,1 +1,10 @@
+cmake_minimum_required(VERSION 2.8)
+find_package(VTK REQUIRED)
+#if(not VTK_USE_RENDERING)
+#  message(FATAL_ERROR " Carte requires VTK_USE_RENDERING.")
+#endif(not VTK_USE_RENDERING)
+include(${VTK_USE_FILE})
 add_executable(osm_contour osm_contour.cpp Map.cpp Contour.cpp ContourLevel.cpp ContourMap.cpp)
+add_executable(Carte Carte.cxx Map.cpp)
+target_link_libraries(Carte vtkRendering)
+

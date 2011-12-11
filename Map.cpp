@@ -42,8 +42,8 @@ Map::Map(const char * fichier_asc,
   int  new_yllcorner = yllcorner + (nrows-last_row) * cellsize;
 
   #ifndef NDEBUG
-  std::cout << "Extracting columns " << first_col << "-" 
-            <<  "from rows" << first_row << "-"<< last_row << std::endl; 
+  std::cout << "Extracting columns " << first_col << "-" << last_col 
+            <<  " and rows " << first_row << "-"<< last_row << std::endl; 
   #endif  
   elevation = matrix<double>(new_nrows+1,new_ncols+1);
   for(int i = 0; i < last_row +1; i++)
@@ -52,18 +52,18 @@ Map::Map(const char * fichier_asc,
      for (int j = first_col; j < last_col; j++) {  
          if ( i >= first_row) {
           f_in >> elevation(i-first_row,j-first_col); 
-          #ifndef NDEBUG
-              std::cout << elevation(i-first_row,j-first_col)  
-      	          << " " ;
-          #endif
+          //#ifndef NDEBUG
+          //    std::cout << elevation(i-first_row,j-first_col)  
+      	  //        << " " ;
+          //#endif
          }
          else {
           f_in >> vide;
          }
      }
-     #ifndef NDEBUG
-        std::cout <<  std::endl;
-     #endif 
+     //#ifndef NDEBUG
+     //   std::cout <<  std::endl;
+     //#endif 
   }
   f_in.close();
   ncols = new_ncols;
@@ -71,25 +71,25 @@ Map::Map(const char * fichier_asc,
   xllcorner = new_xllcorner;
   yllcorner = new_yllcorner;
  
-  x_array.resize(nrows,0);
-  y_array.resize(ncols,0);
+  x_array.resize(ncols,0);
+  y_array.resize(nrows,0);
   for(int i = 0; i < ncols; ++i) {
        x_array[i] = i * cellsize + xllcorner;
   }
     
   for(int j = 0; j < nrows; ++j) {
-       y_array[j] = (ncols-j) * cellsize + yllcorner;
+       y_array[j] = (nrows-j) * cellsize + yllcorner;
   }
 
 }   
 
-double Map::value(int j, int i)
+double Map::value(int y, int x)
 {
-   assert(i >=0);
-   assert(i <= nrows);
-   assert(j >=0);
-   assert(j <= ncols);
-   return elevation(i,j);
+   assert(y >=0);
+   assert(y < nrows);
+   assert(x >=0);
+   assert(x < ncols);
+   return elevation(y,x);
 }
 
 SPoint Map::lower_bound()
@@ -99,5 +99,5 @@ SPoint Map::lower_bound()
 
 SPoint Map::upper_bound()
 {
-   return SPoint((nrows-1),(ncols-1));
+   return SPoint((ncols-1),(nrows-1));
 }

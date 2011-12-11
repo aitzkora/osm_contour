@@ -97,12 +97,12 @@ int ContourMap::contour(Map *r)
 		// start from zero
 		//=============================================================
                         h[m] = r->value(i+im[m-1],j+jm[m-1])-levels[k];
-                        xh[m] = r->x_array[i+im[m-1]];
-                        yh[m] = r->y_array[j+jm[m-1]];
+                        xh[m] = r->y_array[i+im[m-1]];
+                        yh[m] = r->x_array[j+jm[m-1]];
                      } else {
                         h[0] = 0.25*(h[1]+h[2]+h[3]+h[4]);
-                        xh[0]=0.5*(r->x_array[i]+r->x_array[i+1]);
-                        yh[0]=0.5*(r->y_array[j]+r->y_array[j+1]);
+                        xh[0]=0.5*(r->y_array[i]+r->y_array[i+1]);
+                        yh[0]=0.5*(r->x_array[j]+r->x_array[j+1]);
                      }
                      if (h[m]>0.0) {
                         sh[m] = 1;

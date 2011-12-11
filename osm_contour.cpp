@@ -4,10 +4,10 @@
 int main(int argc, char * argv[]) {
   Map m(argv[1],48.2998,6.935,48.312,6.950);
   ContourMap *map=new ContourMap;
-  int min_ele = 300;
-  int max_ele = 700;
+  double min_ele = -500;
+  double max_ele = 9000;
   int step = 25;
-  int num = (max_ele-min_ele)/step;
+  int num = static_cast<int>((max_ele-min_ele)/step);
   
   map->generate_levels(min_ele,max_ele,num);
   std::cout << "Attempting to contour" << std::endl;

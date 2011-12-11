@@ -76,14 +76,14 @@ int Contour::reverse()
 // swap the old contour vector with the new reversed one we just generated
    delete contour;
    contour=tmp;
-   return (0);
+   return 0;
 }
 
 int Contour::merge(Contour *c)
 {
    this->contour->insert(this->contour->end(),c->contour->begin(),c->contour->end());
    this->_end=c->_end;
-   return(0);
+   return 0;
 } 
 
 Contour::Contour(Contour *c)
